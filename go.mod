@@ -1,4 +1,4 @@
-module go-audit-client
+module github.com/GabrielAlexVic/go-audit-client
 
 go 1.26.1
 
