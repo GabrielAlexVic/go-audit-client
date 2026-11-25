@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"time"
+	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/nats-io/nats.go"
@@ -26,20 +27,20 @@ func NewClient(natsURL, serviceName string, opts ...Option) (*Client, error) {
 			nats.Name(serviceName),
 			nats.MaxReconnects(-1),
 			nats.DisconnectErrHandler(func(c *nats.Conn, err error) {
-				log.Println("NATS: disconnected", "error", err, c.LastError())
+				fmt.Fprintln(os.Stderr, "NATS: disconnected", "error", err, c.LastError())
 			}),
 			nats.ReconnectHandler(func(c *nats.Conn) {
-				log.Println("NATS: reconnected", c.LastError())
+				fmt.Fprintln(os.Stderr, "NATS: reconnected", c.LastError())
 			}),
 			nats.ErrorHandler(func(c *nats.Conn, sub *nats.Subscription, err error) {
 				subject := "unknown"
 				if sub != nil {
 					subject = sub.Subject
 				}
-				log.Println("NATS: async error", "subject", subject, "error", err, c.LastError())
+				fmt.Fprintln(os.Stderr, "NATS: async error", "subject", subject, "error", err, c.LastError())
 			}),
 			nats.ClosedHandler(func(c *nats.Conn) {
-				log.Println("NATS: connection closed", c.LastError())
+				fmt.Fprintln(os.Stderr, "NATS: connection closed", c.LastError())
 			}),
 		},
 	}
