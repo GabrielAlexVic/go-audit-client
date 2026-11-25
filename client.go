@@ -3,8 +3,9 @@ package auditclient
 import (
 	"context"
 	"encoding/json"
-	"time"
 	"fmt"
+	"os"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/nats-io/nats.go"
