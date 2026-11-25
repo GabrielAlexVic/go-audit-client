@@ -3,7 +3,6 @@ package auditclient
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"time"
 	"fmt"
 
