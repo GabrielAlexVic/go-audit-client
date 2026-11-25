@@ -77,16 +77,11 @@ func (c *Client) Write(p []byte) (n int, err error) {
 
 	payload, err := json.Marshal(event)
 	if err != nil {
-		log.Println("AuditClient: Failed to marshal audit event", err)
-		return len(p), nil
+		return len(p), err
 	}
 
 	_, err = c.stream.Publish(context.Background(), c.subject, payload)
-	if err != nil {
-		log.Println("AuditClient: Failed to send log/audit to remote server", err)
-	}
-
-	return len(p), nil
+	return len(p), err
 }
 
 func (c *Client) Close() {
