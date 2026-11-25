@@ -25,21 +25,21 @@ func NewClient(natsURL, serviceName string, opts ...Option) (*Client, error) {
 		NatsOptions: []nats.Option{
 			nats.Name(serviceName),
 			nats.MaxReconnects(-1),
-			nats.DisconnectErrHandler(func(_ *nats.Conn, err error) {
-				log.Println("NATS: disconnected", "error", err)
+			nats.DisconnectErrHandler(func(c *nats.Conn, err error) {
+				log.Println("NATS: disconnected", "error", err, c.LastError())
 			}),
 			nats.ReconnectHandler(func(c *nats.Conn) {
-				log.Println("NATS: reconnected")
+				log.Println("NATS: reconnected", c.LastError())
 			}),
-			nats.ErrorHandler(func(_ *nats.Conn, sub *nats.Subscription, err error) {
+			nats.ErrorHandler(func(c *nats.Conn, sub *nats.Subscription, err error) {
 				subject := "unknown"
 				if sub != nil {
 					subject = sub.Subject
 				}
-				log.Println("NATS: async error", "subject", subject, "error", err)
+				log.Println("NATS: async error", "subject", subject, "error", err, c.LastError())
 			}),
-			nats.ClosedHandler(func(_ *nats.Conn) {
-				log.Println("NATS: connection closed")
+			nats.ClosedHandler(func(c *nats.Conn) {
+				log.Println("NATS: connection closed", c.LastError())
 			}),
 		},
 	}
